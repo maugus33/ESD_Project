@@ -139,7 +139,7 @@ void Transmit(void);
 void InitializeClocks(void);
 
 
-void main(void)
+/*void main(void)
 {
   unsigned int uartUpdateTimer = UART_UPDATE_INTERVAL;
   unsigned char i;
@@ -151,21 +151,21 @@ void main(void)
   InitializeLeds();
   PreApplicationMode();                     // Blinks LEDs, waits for button press
 
-  /* Application Mode begins */
+  // Application Mode begins
   applicationMode = APP_APPLICATION_MODE;
   ConfigureAdcTempSensor();
   ConfigureTimerPwm();
 
   __enable_interrupt();                     // Enable interrupts.
 
-  /* Main Application Loop */
+  // Main Application Loop
   while(1)
   {
     ADC10CTL0 |= ENC + ADC10SC;             // Sampling and conversion start
     __bis_SR_register(CPUOFF + GIE);        // LPM0 with interrupts enabled
 
 
-    /* Moving average filter out of 8 values to somewhat stabilize sampled ADC */
+    // Moving average filter out of 8 values to somewhat stabilize sampled ADC
     tempMeasured[tempMeasuredPosition++] = ADC10MEM;
     if (tempMeasuredPosition == 8)
       tempMeasuredPosition = 0;
@@ -221,7 +221,7 @@ void main(void)
       TACCTL1 |= CCIE;
     }
   }
-}
+}*/
 
 void PreApplicationMode(void)
 {
