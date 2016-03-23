@@ -1,0 +1,1 @@
+"./Libraries/CTS_HAL.obj" "./Libraries/CTS_Layer.obj" "./Libraries/structure.obj" "./Libraries/uart.obj" "./Application/Smart_Lighting_System_main.obj" "../lnk_msp430g2452.cmd" -l"libc.a" 
