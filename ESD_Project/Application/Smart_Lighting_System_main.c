@@ -113,7 +113,6 @@ void main(void)
   WDTCTL = WDTPW | WDTHOLD;        // Stop watchdog timer
 
   InitLaunchPadCore();             //Initial settings for the system
-//  lcd_init();                      //LCD initial settings
 
   BCSCTL1 = CALBC1_1MHZ;           //Set calibrated range for DCO to 1MHz
   DCOCTL = CALDCO_1MHZ;            //Set DCO to 1MHz
@@ -228,8 +227,10 @@ void CapTouchIdleMode(void)
 //  lcd_init();                    //LCD initial settings
 //  send_string("Welcome");
 //  send_command(SECONDLINE);      //move cusor to the second line
-//  send_string("Light Level: ");
+//  send_string("Level: ");
 //  send_number(display_value);
+//  fadeLight(display_value);
+
 }
  
 /* ----------------MeasureCapBaseLine--------------------------------------
@@ -363,6 +364,11 @@ void CapTouchActiveMode()
   activeCounter = 0;
   gestureDetected = 0;
   
+//  lcd_init();                    //LCD initial settings
+//  send_string("Welcome");
+//  send_command(SECONDLINE);      //move cusor to the second line
+//  send_string("Level: ");
+//  send_number(display_value);
 
   while (idleCounter++ < MAX_IDLE_TIME)
   {  
@@ -370,6 +376,10 @@ void CapTouchActiveMode()
     DCOCTL = CALDCO_8MHZ;        //Set DCO to 8MHz
     BCSCTL2 |= DIVS_3;           //Set SMCLK = DCO/8 = 1MHz
     TACCTL0 &= ~CCIE;   
+
+//    send_string("Level: ");
+//    send_number(display_value);
+//    fadeLight(display_value);
 
     wheel_position = ILLEGAL_SLIDER_WHEEL_POSITION;
     wheel_position = TI_CAPT_Wheel(&wheel);
@@ -441,6 +451,7 @@ void CapTouchActiveMode()
 
         myprint("CapTouchActiveMode- display_value: ");
         SendData(display_value);
+//        fadeLight(display_value);
       }
 
       else
@@ -473,6 +484,7 @@ void CapTouchActiveMode()
           /* Transmit center button code [twice] via UART to PC */
           myprint("CapTouchActiveMode- MIDDLE_BUTTON_CODE: ");
           SendData(MIDDLE_BUTTON_CODE);
+//          fadeLight(display_value);
 
           centerButtonTouched = 1;
           
@@ -487,6 +499,7 @@ void CapTouchActiveMode()
 
           myprint("CapTouchActiveMode- Display value: ");
           SendData(display_value);
+//          fadeLight(display_value);
         }
 
         idleCounter = 0;
@@ -523,8 +536,7 @@ void CapTouchActiveMode()
 //Function used to fade the LED
 void fadeLight(int valuePWM)
 {
-
-  P2SEL |= BIT6;                //set P2.6 to be used as TA0.1
+  P1SEL |= BIT6;                //set P1.6 to be used as TA0.1
   CCR0 = 100 - 0;               // PWM Period
   CCTL1 = OUTMOD_7;             // CCR1 reset/set
   CCR1 = valuePWM;              // CCR1 PWM duty cycle
