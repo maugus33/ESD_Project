@@ -87,6 +87,7 @@
 //#define PROXIMITY_THRESHOLD     150
 #define PRESET_LEVEL            60        //Preset brightness level = 60%
 #define LIGHT                   BIT6
+#define DISPLAY                 BIT7
 
 /*------------------------------- GLOBAL DATA --------------------------------*/
 unsigned int wheel_position=ILLEGAL_SLIDER_WHEEL_POSITION,
@@ -172,10 +173,10 @@ void InitLaunchPadCore(void)
 
   P2SEL = 0x00;                  //Configure P2 as I/Os, No XTAL
   P2OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5);    //Cap touch sensors
-  P2OUT &= ~BIT7;       //Set display enable pin to low
+  P2OUT &= ~DISPLAY;        //Set display enable pin to low
   P2DIR |= (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5);  //Cap touch sensors
-  P2DIR |= BIT7;        //Set the display enable pin as output
-  P2DIR &= ~BIT6;       //Set P2.6 as input for the motion sensor
+  P2DIR |= DISPLAY;         //Set the display enable pin as output
+  P2DIR &= ~BIT6;           //Set P2.6 as input for the motion sensor
 }
 
 /* ----------------------------MotionSensor--------------------------------
@@ -207,7 +208,7 @@ void CapTouchIdleMode(void)
   DCOCTL = CALDCO_1MHZ;                 //Set DCO to 1MHz
   BCSCTL2 |= DIVS_3;                    //Set SMCLK = DCO/8 = 125KHz
   
-  P2OUT &= ~BIT7;                        //Set display enable pin to low
+  P2OUT &= ~DISPLAY;                       //Set display enable pin to low
   deltaCnts[0] = 0;
   
   /* Sleeping in LPM3 with ACLK/100 = 12Khz/100 = 120Hz wake up interval */
@@ -218,15 +219,15 @@ void CapTouchIdleMode(void)
     TACCR0 = 100;
     TACTL = TASSEL_1 + MC_1;
     TACCTL0 |= CCIE;
-    __bis_SR_register(LPM3_bits+GIE);
-    TACCTL0 &= ~CCIE;                             
+//    __bis_SR_register(LPM3_bits+GIE);
+    TACCTL0 &= ~CCIE;
     TI_CAPT_Custom(&proximity_sensor,deltaCnts);
   } while (deltaCnts[0] <= PROXIMITY_THRESHOLD);
   
-  P2OUT |= BIT7;                 //Set display enable pin to high
-//  lcd_init();                    //LCD initial settings
+  P2OUT |= DISPLAY;                 //Set display enable pin to high
+//  lcd_init();                       //LCD initial settings
 //  send_string("Welcome");
-//  send_command(SECONDLINE);      //move cusor to the second line
+//  send_command(SECONDLINE);         //move cusor to the second line
 //  send_string("Level: ");
 //  send_number(display_value);
 //  fadeLight(display_value);
@@ -540,6 +541,6 @@ void fadeLight(int valuePWM)
   CCR0 = 100 - 0;               // PWM Period
   CCTL1 = OUTMOD_7;             // CCR1 reset/set
   CCR1 = valuePWM;              // CCR1 PWM duty cycle
-  TACTL = TASSEL_2 + MC_1; // SMCLK, up mode
+  TACTL = TASSEL_2 + MC_1;      // SMCLK, up mode
 }
 
