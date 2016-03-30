@@ -1,10 +1,10 @@
 ******************************************************************************
-                  MSP430 Linker PC v4.4.6                      
+                  MSP430 Linker PC v4.4.3                      
 ******************************************************************************
->> Linked Fri Mar 25 01:41:30 2016
+>> Linked Wed Mar 30 15:50:06 2016
 
 OUTPUT FILE NAME:   <ESD_Project.out>
-ENTRY POINT SYMBOL: "_c_int00_noargs_noexit"  address: 0000f0ca
+ENTRY POINT SYMBOL: "_c_int00_noargs_noexit"  address: 0000f384
 
 
 MEMORY CONFIGURATION
@@ -14,12 +14,12 @@ MEMORY CONFIGURATION
   SFR                   00000000   00000010  00000000  00000010  RWIX
   PERIPHERALS_8BIT      00000010   000000f0  00000000  000000f0  RWIX
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
-  RAM                   00000200   00000100  00000072  0000008e  RWIX
+  RAM                   00000200   00000100  00000078  00000088  RWIX
   INFOD                 00001000   00000040  00000000  00000040  RWIX
   INFOC                 00001040   00000040  00000000  00000040  RWIX
   INFOB                 00001080   00000040  00000000  00000040  RWIX
   INFOA                 000010c0   00000040  00000000  00000040  RWIX
-  FLASH                 0000e000   00001fe0  000013ce  00000c12  RWIX
+  FLASH                 0000e000   00001fe0  000016de  00000902  RWIX
   INT00                 0000ffe0   00000002  00000000  00000002  RWIX
   INT01                 0000ffe2   00000002  00000000  00000002  RWIX
   INT02                 0000ffe4   00000002  00000002  00000000  RWIX
@@ -43,87 +43,101 @@ SECTION ALLOCATION MAP
  output                                  attributes/
 section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
-.bss       0    00000200    00000018     UNINITIALIZED
+.bss       0    00000200    0000001c     UNINITIALIZED
                   00000200    0000000c     (.common:baseCnt)
                   0000020c    00000008     (.common:measCnt)
                   00000214    00000002     (.common:deltaCnts)
-                  00000216    00000002     (.common:txData)
+                  00000216    00000002     (.common:i)
+                  00000218    00000002     (.common:j)
+                  0000021a    00000002     (.common:txData)
 
-.data      0    00000218    0000000a     UNINITIALIZED
-                  00000218    00000006     Smart_Lighting_System_main.obj (.data)
-                  0000021e    00000002     CTS_Layer.obj (.data)
-                  00000220    00000002     uart.obj (.data)
+.data      0    0000021c    0000000c     UNINITIALIZED
+                  0000021c    00000008     Smart_Lighting_System_main.obj (.data)
+                  00000224    00000002     CTS_Layer.obj (.data)
+                  00000226    00000002     uart.obj (.data)
 
 .TI.persistent 
-*          0    00000218    00000000     UNINITIALIZED
+*          0    0000021c    00000000     UNINITIALIZED
 
 .stack     0    000002b0    00000050     UNINITIALIZED
                   000002b0    00000002     rts430_eabi.lib : boot.obj (.stack)
                   000002b2    0000004e     --HOLE--
 
-.text      0    0000e000    00001238     
+.text      0    0000e000    00001528     
                   0000e000    000003a6     CTS_Layer.obj (.text:TI_CAPT_Custom)
-                  0000e3a6    000001c2     CTS_Layer.obj (.text:TI_CAPT_Wheel)
-                  0000e568    000001c0     Smart_Lighting_System_main.obj (.text:CapTouchActiveMode)
-                  0000e728    0000012a     CTS_HAL.obj (.text:TI_CTS_RO_PINOSC_TA0_WDTp_HAL)
-                  0000e852    00000116     rts430_eabi.lib : _printfi_min.obj (.text:_setfield)
-                  0000e968    000000ce     CTS_Layer.obj (.text:Dominant_Element)
-                  0000ea36    000000ca     rts430_eabi.lib : _printfi_min.obj (.text:__TI_printfi_minimal)
-                  0000eb00    00000072     Smart_Lighting_System_main.obj (.text:GetGesture)
-                  0000eb72    00000064     rts430_eabi.lib : copy_decompress_rle.obj (.text:__TI_decompress_rle_core)
-                  0000ebd6    00000062     CTS_Layer.obj (.text:TI_CAPT_Update_Baseline)
-                  0000ec38    00000060     Smart_Lighting_System_main.obj (.text:CapTouchIdleMode)
-                  0000ec98    00000058     rts430_eabi.lib : autoinit.obj (.text:_auto_init)
-                  0000ecf0    00000056                     : _printfi_min.obj (.text:_ltostr)
-                  0000ed46    0000004e                     : _printfi_min.obj (.text:_pproc_diouxp)
-                  0000ed94    0000004c                     : lsr16.obj (.text)
-                  0000ede0    0000004a     uart.obj (.text:Timer_A0_ISR)
-                  0000ee2a    00000048     Smart_Lighting_System_main.obj (.text:InitLaunchPadCore)
-                  0000ee72    00000048     rts430_eabi.lib : _printfi_min.obj (.text:_pproc_str)
-                  0000eeba    00000042     Smart_Lighting_System_main.obj (.text:SendData)
-                  0000eefc    0000003e     Smart_Lighting_System_main.obj (.text:main)
-                  0000ef3a    00000038     Smart_Lighting_System_main.obj (.text:MeasureCapBaseLine)
-                  0000ef72    00000038     uart.obj (.text:TimerA_UART_init)
-                  0000efaa    00000038     rts430_eabi.lib : sprintf.obj (.text:sprintf)
-                  0000efe2    0000002e                     : _printfi_min.obj (.text:_getarg_diouxp)
-                  0000f010    0000002c     uart.obj (.text:TimerA_UART_tx)
-                  0000f03c    0000002c     rts430_eabi.lib : div16s.obj (.text)
-                  0000f068    0000002c                     : lsl16.obj (.text)
-                  0000f094    0000001c     uart.obj (.text:TimerA_UART_shutdown)
-                  0000f0b0    0000001a     CTS_Layer.obj (.text:TI_CAPT_Button)
-                  0000f0ca    0000001a     rts430_eabi.lib : boot_special.obj (.text:_c_int00_noargs_noexit)
-                  0000f0e4    0000001a                     : sprintf.obj (.text:_outs)
-                  0000f0fe    0000001a                     : memccpy.obj (.text:memccpy)
-                  0000f118    00000018                     : _printfi_min.obj (.text:_div)
-                  0000f130    00000016     Smart_Lighting_System_main.obj (.text:myprint)
-                  0000f146    00000016     rts430_eabi.lib : div16u.obj (.text)
-                  0000f15c    00000014                     : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
-                  0000f170    00000014                     : memset.obj (.text:memset)
-                  0000f184    00000014                     : mult16.obj (.text)
-                  0000f198    00000012     uart.obj (.text:TimerA_UART_print)
-                  0000f1aa    00000012     rts430_eabi.lib : sprintf.obj (.text:_outc)
-                  0000f1bc    00000012                     : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
-                  0000f1ce    00000012                     : memcpy.obj (.text:memcpy)
-                  0000f1e0    00000010     CTS_Layer.obj (.text:TI_CAPT_Init_Baseline)
-                  0000f1f0    00000010     rts430_eabi.lib : epilog.obj (.text)
-                  0000f200    0000000e     CTS_Layer.obj (.text:TI_CAPT_Raw)
-                  0000f20e    0000000e     rts430_eabi.lib : strlen.obj (.text:strlen)
-                  0000f21c    00000008     CTS_HAL.obj (.text:watchdog_timer)
-                  0000f224    00000006     rts430_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
-                  0000f22a    00000006                     : copy_decompress_rle.obj (.text:decompress:rle24:__TI_decompress_rle24)
-                  0000f230    00000004                     : pre_init.obj (.text:_system_pre_init)
-                  0000f234    00000004                     : exit.obj (.text:abort)
+                  0000e3a6    00000224     Smart_Lighting_System_main.obj (.text:CapTouchActiveMode)
+                  0000e5ca    000001c2     CTS_Layer.obj (.text:TI_CAPT_Wheel)
+                  0000e78c    0000012a     CTS_HAL.obj (.text:TI_CTS_RO_PINOSC_TA0_WDTp_HAL)
+                  0000e8b6    00000116     rts430_eabi.lib : _printfi_min.obj (.text:_setfield)
+                  0000e9cc    000000ce     CTS_Layer.obj (.text:Dominant_Element)
+                  0000ea9a    000000ca     rts430_eabi.lib : _printfi_min.obj (.text:__TI_printfi_minimal)
+                  0000eb64    000000b6     Smart_Lighting_System_main.obj (.text:CapTouchIdleMode)
+                  0000ec1a    00000088     Smart_Lighting_System_main.obj (.text:main)
+                  0000eca2    00000072     Smart_Lighting_System_main.obj (.text:GetGesture)
+                  0000ed14    00000064     rts430_eabi.lib : copy_decompress_rle.obj (.text:__TI_decompress_rle_core)
+                  0000ed78    00000062     CTS_Layer.obj (.text:TI_CAPT_Update_Baseline)
+                  0000edda    0000005a     Smart_Lighting_System_main.obj (.text:InitLaunchPadCore)
+                  0000ee34    00000058     rts430_eabi.lib : autoinit.obj (.text:_auto_init)
+                  0000ee8c    00000056                     : _printfi_min.obj (.text:_ltostr)
+                  0000eee2    0000004e                     : _printfi_min.obj (.text:_pproc_diouxp)
+                  0000ef30    0000004c                     : lsr16.obj (.text)
+                  0000ef7c    0000004a     uart.obj (.text:Timer_A0_ISR)
+                  0000efc6    00000048     rts430_eabi.lib : _printfi_min.obj (.text:_pproc_str)
+                  0000f00e    00000044     Smart_Lighting_System_main.obj (.text:lcd_init)
+                  0000f052    00000042     Smart_Lighting_System_main.obj (.text:SendData)
+                  0000f094    00000042     Smart_Lighting_System_main.obj (.text:send_command)
+                  0000f0d6    00000042     Smart_Lighting_System_main.obj (.text:send_data)
+                  0000f118    00000038     Smart_Lighting_System_main.obj (.text:MeasureCapBaseLine)
+                  0000f150    00000038     uart.obj (.text:TimerA_UART_init)
+                  0000f188    00000038     rts430_eabi.lib : sprintf.obj (.text:sprintf)
+                  0000f1c0    0000002e                     : _printfi_min.obj (.text:_getarg_diouxp)
+                  0000f1ee    0000002e     Smart_Lighting_System_main.obj (.text:delay)
+                  0000f21c    0000002c     uart.obj (.text:TimerA_UART_tx)
+                  0000f248    0000002c     rts430_eabi.lib : asr16.obj (.text)
+                  0000f274    0000002c                     : div16s.obj (.text)
+                  0000f2a0    0000002c                     : lsl16.obj (.text)
+                  0000f2cc    00000024     Smart_Lighting_System_main.obj (.text:send_number)
+                  0000f2f0    00000020     Smart_Lighting_System_main.obj (.text:Port_2)
+                  0000f310    00000020     Smart_Lighting_System_main.obj (.text:TA2_ISR)
+                  0000f330    0000001e     Smart_Lighting_System_main.obj (.text:fadeLight)
+                  0000f34e    0000001c     uart.obj (.text:TimerA_UART_shutdown)
+                  0000f36a    0000001a     CTS_Layer.obj (.text:TI_CAPT_Button)
+                  0000f384    0000001a     rts430_eabi.lib : boot_special.obj (.text:_c_int00_noargs_noexit)
+                  0000f39e    0000001a                     : sprintf.obj (.text:_outs)
+                  0000f3b8    0000001a                     : memccpy.obj (.text:memccpy)
+                  0000f3d2    00000018                     : _printfi_min.obj (.text:_div)
+                  0000f3ea    00000016     Smart_Lighting_System_main.obj (.text:myprint)
+                  0000f400    00000016     rts430_eabi.lib : div16u.obj (.text)
+                  0000f416    00000014     Smart_Lighting_System_main.obj (.text:data_write)
+                  0000f42a    00000014     rts430_eabi.lib : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
+                  0000f43e    00000014                     : memset.obj (.text:memset)
+                  0000f452    00000014                     : mult16.obj (.text)
+                  0000f466    00000014     Smart_Lighting_System_main.obj (.text:send_string)
+                  0000f47a    00000012     uart.obj (.text:TimerA_UART_print)
+                  0000f48c    00000012     rts430_eabi.lib : sprintf.obj (.text:_outc)
+                  0000f49e    00000012                     : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
+                  0000f4b0    00000012                     : memcpy.obj (.text:memcpy)
+                  0000f4c2    00000010     CTS_Layer.obj (.text:TI_CAPT_Init_Baseline)
+                  0000f4d2    00000010     rts430_eabi.lib : epilog.obj (.text)
+                  0000f4e2    0000000e     CTS_Layer.obj (.text:TI_CAPT_Raw)
+                  0000f4f0    0000000e     Smart_Lighting_System_main.obj (.text:check_busy)
+                  0000f4fe    0000000e     rts430_eabi.lib : strlen.obj (.text:strlen)
+                  0000f50c    00000008     CTS_HAL.obj (.text:watchdog_timer)
+                  0000f514    00000006     rts430_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
+                  0000f51a    00000006                     : copy_decompress_rle.obj (.text:decompress:rle24:__TI_decompress_rle24)
+                  0000f520    00000004                     : pre_init.obj (.text:_system_pre_init)
+                  0000f524    00000004                     : exit.obj (.text:abort)
 
-.const     0    0000f238    00000176     
-                  0000f238    000000ea     Smart_Lighting_System_main.obj (.const:.string)
-                  0000f322    00000078     structure.obj (.const)
-                  0000f39a    00000014     rts430_eabi.lib : _printfi_min.obj (.const:.string)
+.const     0    0000f528    00000194     
+                  0000f528    00000108     Smart_Lighting_System_main.obj (.const:.string)
+                  0000f630    00000078     structure.obj (.const)
+                  0000f6a8    00000014     rts430_eabi.lib : _printfi_min.obj (.const:.string)
 
-.cinit     0    0000f3ae    00000020     
-                  0000f3ae    0000000e     (.cinit..data.load) [load image]
-                  0000f3bc    00000006     (__TI_handler_table)
-                  0000f3c2    00000004     (.cinit..bss.load) [load image, compression = zero_init]
-                  0000f3c6    00000008     (__TI_cinit_table)
+.cinit     0    0000f6bc    00000022     
+                  0000f6bc    00000010     (.cinit..data.load) [load image]
+                  0000f6cc    00000006     (__TI_handler_table)
+                  0000f6d2    00000004     (.cinit..bss.load) [load image, compression = zero_init]
+                  0000f6d6    00000008     (__TI_cinit_table)
 
 .init_array 
 *          0    0000e000    00000000     UNINITIALIZED
@@ -132,7 +146,7 @@ PORT1      0    0000ffe4    00000002
                   0000ffe4    00000002     rts430_eabi.lib : int02.obj (.int02)
 
 PORT2      0    0000ffe6    00000002     
-                  0000ffe6    00000002     rts430_eabi.lib : int03.obj (.int03)
+                  0000ffe6    00000002     Smart_Lighting_System_main.obj (.int03)
 
 USI        0    0000ffe8    00000002     
                   0000ffe8    00000002     rts430_eabi.lib : int04.obj (.int04)
@@ -142,7 +156,7 @@ ADC10      0    0000ffea    00000002
 
 TIMER0_A1 
 *          0    0000fff0    00000002     
-                  0000fff0    00000002     rts430_eabi.lib : int08.obj (.int08)
+                  0000fff0    00000002     Smart_Lighting_System_main.obj (.int08)
 
 TIMER0_A0 
 *          0    0000fff2    00000002     
@@ -164,14 +178,14 @@ NMI        0    0000fffc    00000002
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 0000f3c6 records: 2, size/record: 4, table size: 8
-	.data: load addr=0000f3ae, load size=0000000e bytes, run addr=00000218, run size=0000000a bytes, compression=copy
-	.bss: load addr=0000f3c2, load size=00000004 bytes, run addr=00000200, run size=00000018 bytes, compression=zero_init
+__TI_cinit_table @ 0000f6d6 records: 2, size/record: 4, table size: 8
+	.data: load addr=0000f6bc, load size=00000010 bytes, run addr=0000021c, run size=0000000c bytes, compression=copy
+	.bss: load addr=0000f6d2, load size=00000004 bytes, run addr=00000200, run size=0000001c bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 0000f3bc records: 3, size/record: 2, table size: 6
+__TI_handler_table @ 0000f6cc records: 3, size/record: 2, table size: 6
 	index: 0, handler: __TI_zero_init
 	index: 1, handler: __TI_decompress_rle24
 	index: 2, handler: __TI_decompress_none
@@ -191,7 +205,7 @@ address   name
 00000057  BCSCTL1                      
 00000058  BCSCTL2                      
 00000053  BCSCTL3                      
-0000f234  C$$EXIT                      
+0000f524  C$$EXIT                      
 00000059  CACTL1                       
 0000005a  CACTL2                       
 000010fb  CALBC1_12MHZ                 
@@ -203,18 +217,18 @@ address   name
 000010fe  CALDCO_1MHZ                  
 000010fc  CALDCO_8MHZ                  
 0000005b  CAPD                         
-0000e568  CapTouchActiveMode           
-0000ec38  CapTouchIdleMode             
+0000e3a6  CapTouchActiveMode           
+0000eb64  CapTouchIdleMode             
 00000056  DCOCTL                       
-0000e968  Dominant_Element             
+0000e9cc  Dominant_Element             
 00000128  FCTL1                        
 0000012a  FCTL2                        
 0000012c  FCTL3                        
-0000eb00  GetGesture                   
+0000eca2  GetGesture                   
 00000000  IE1                          
 00000002  IFG1                         
-0000ee2a  InitLaunchPadCore            
-0000ef3a  MeasureCapBaseLine           
+0000edda  InitLaunchPadCore            
+0000f118  MeasureCapBaseLine           
 00000022  P1DIR                        
 00000025  P1IE                         
 00000024  P1IES                        
@@ -233,7 +247,8 @@ address   name
 0000002f  P2REN                        
 0000002e  P2SEL                        
 00000042  P2SEL2                       
-0000eeba  SendData                     
+0000f2f0  Port_2                       
+0000f052  SendData                     
 00000172  TA0CCR0                      
 00000174  TA0CCR1                      
 00000176  TA0CCR2                      
@@ -243,18 +258,19 @@ address   name
 00000160  TA0CTL                       
 0000012e  TA0IV                        
 00000170  TA0R                         
-0000f0b0  TI_CAPT_Button               
+0000f310  TA2_ISR                      
+0000f36a  TI_CAPT_Button               
 0000e000  TI_CAPT_Custom               
-0000f1e0  TI_CAPT_Init_Baseline        
-0000f200  TI_CAPT_Raw                  
-0000ebd6  TI_CAPT_Update_Baseline      
-0000e3a6  TI_CAPT_Wheel                
-0000e728  TI_CTS_RO_PINOSC_TA0_WDTp_HAL
-0000ef72  TimerA_UART_init             
-0000f198  TimerA_UART_print            
-0000f094  TimerA_UART_shutdown         
-0000f010  TimerA_UART_tx               
-0000ede0  Timer_A0_ISR                 
+0000f4c2  TI_CAPT_Init_Baseline        
+0000f4e2  TI_CAPT_Raw                  
+0000ed78  TI_CAPT_Update_Baseline      
+0000e5ca  TI_CAPT_Wheel                
+0000e78c  TI_CTS_RO_PINOSC_TA0_WDTp_HAL
+0000f150  TimerA_UART_init             
+0000f47a  TimerA_UART_print            
+0000f34e  TimerA_UART_shutdown         
+0000f21c  TimerA_UART_tx               
+0000ef7c  Timer_A0_ISR                 
 0000007a  USICCTL                      
 0000007a  USICKCTL                     
 0000007b  USICNT                       
@@ -267,15 +283,15 @@ address   name
 00000120  WDTCTL                       
 00000300  __STACK_END                  
 00000050  __STACK_SIZE                 
-0000f3c6  __TI_CINIT_Base              
-0000f3ce  __TI_CINIT_Limit             
-0000f3bc  __TI_Handler_Table_Base      
-0000f3c2  __TI_Handler_Table_Limit     
+0000f6d6  __TI_CINIT_Base              
+0000f6de  __TI_CINIT_Limit             
+0000f6cc  __TI_Handler_Table_Base      
+0000f6d2  __TI_Handler_Table_Limit     
 UNDEFED   __TI_INITARRAY_Base          
 UNDEFED   __TI_INITARRAY_Limit         
-0000f224  __TI_ISR_TRAP                
-0000f1bc  __TI_decompress_none         
-0000f22a  __TI_decompress_rle24        
+0000f514  __TI_ISR_TRAP                
+0000f49e  __TI_decompress_none         
+0000f51a  __TI_decompress_rle24        
 0000ffe4  __TI_int02                   
 0000ffe6  __TI_int03                   
 0000ffe8  __TI_int04                   
@@ -285,88 +301,115 @@ UNDEFED   __TI_INITARRAY_Limit
 0000fff4  __TI_int10                   
 0000fff6  __TI_int11                   
 0000fffc  __TI_int14                   
-0000ea36  __TI_printfi_minimal         
-0000f15c  __TI_zero_init               
+0000ea9a  __TI_printfi_minimal         
+0000f42a  __TI_zero_init               
 ffffffff  __binit__                    
 ffffffff  __c_args__                   
-0000f03c  __mspabi_divi                
-0000f146  __mspabi_divu                
-0000f1fc  __mspabi_func_epilog_1       
-0000f1fa  __mspabi_func_epilog_2       
-0000f1f8  __mspabi_func_epilog_3       
-0000f1f6  __mspabi_func_epilog_4       
-0000f1f4  __mspabi_func_epilog_5       
-0000f1f2  __mspabi_func_epilog_6       
-0000f1f0  __mspabi_func_epilog_7       
-0000f184  __mspabi_mpyi                
-0000f184  __mspabi_mpyi_sw             
-0000f03c  __mspabi_remi                
-0000f146  __mspabi_remu                
-0000f068  __mspabi_slli                
-0000f090  __mspabi_slli_1              
-0000f07e  __mspabi_slli_10             
-0000f07c  __mspabi_slli_11             
-0000f07a  __mspabi_slli_12             
-0000f078  __mspabi_slli_13             
-0000f076  __mspabi_slli_14             
-0000f074  __mspabi_slli_15             
-0000f08e  __mspabi_slli_2              
-0000f08c  __mspabi_slli_3              
-0000f08a  __mspabi_slli_4              
-0000f088  __mspabi_slli_5              
-0000f086  __mspabi_slli_6              
-0000f084  __mspabi_slli_7              
-0000f082  __mspabi_slli_8              
-0000f080  __mspabi_slli_9              
-0000ed94  __mspabi_srli                
-0000edda  __mspabi_srli_1              
-0000edb6  __mspabi_srli_10             
-0000edb2  __mspabi_srli_11             
-0000edae  __mspabi_srli_12             
-0000edaa  __mspabi_srli_13             
-0000eda6  __mspabi_srli_14             
-0000eda2  __mspabi_srli_15             
-0000edd6  __mspabi_srli_2              
-0000edd2  __mspabi_srli_3              
-0000edce  __mspabi_srli_4              
-0000edca  __mspabi_srli_5              
-0000edc6  __mspabi_srli_6              
-0000edc2  __mspabi_srli_7              
-0000edbe  __mspabi_srli_8              
-0000edba  __mspabi_srli_9              
-0000ec98  _auto_init                   
-0000f0ca  _c_int00_noargs_noexit       
+0000f274  __mspabi_divi                
+0000f400  __mspabi_divu                
+0000f4de  __mspabi_func_epilog_1       
+0000f4dc  __mspabi_func_epilog_2       
+0000f4da  __mspabi_func_epilog_3       
+0000f4d8  __mspabi_func_epilog_4       
+0000f4d6  __mspabi_func_epilog_5       
+0000f4d4  __mspabi_func_epilog_6       
+0000f4d2  __mspabi_func_epilog_7       
+0000f452  __mspabi_mpyi                
+0000f452  __mspabi_mpyi_sw             
+0000f274  __mspabi_remi                
+0000f400  __mspabi_remu                
+0000f2a0  __mspabi_slli                
+0000f2c8  __mspabi_slli_1              
+0000f2b6  __mspabi_slli_10             
+0000f2b4  __mspabi_slli_11             
+0000f2b2  __mspabi_slli_12             
+0000f2b0  __mspabi_slli_13             
+0000f2ae  __mspabi_slli_14             
+0000f2ac  __mspabi_slli_15             
+0000f2c6  __mspabi_slli_2              
+0000f2c4  __mspabi_slli_3              
+0000f2c2  __mspabi_slli_4              
+0000f2c0  __mspabi_slli_5              
+0000f2be  __mspabi_slli_6              
+0000f2bc  __mspabi_slli_7              
+0000f2ba  __mspabi_slli_8              
+0000f2b8  __mspabi_slli_9              
+0000f248  __mspabi_srai                
+0000f270  __mspabi_srai_1              
+0000f25e  __mspabi_srai_10             
+0000f25c  __mspabi_srai_11             
+0000f25a  __mspabi_srai_12             
+0000f258  __mspabi_srai_13             
+0000f256  __mspabi_srai_14             
+0000f254  __mspabi_srai_15             
+0000f26e  __mspabi_srai_2              
+0000f26c  __mspabi_srai_3              
+0000f26a  __mspabi_srai_4              
+0000f268  __mspabi_srai_5              
+0000f266  __mspabi_srai_6              
+0000f264  __mspabi_srai_7              
+0000f262  __mspabi_srai_8              
+0000f260  __mspabi_srai_9              
+0000ef30  __mspabi_srli                
+0000ef76  __mspabi_srli_1              
+0000ef52  __mspabi_srli_10             
+0000ef4e  __mspabi_srli_11             
+0000ef4a  __mspabi_srli_12             
+0000ef46  __mspabi_srli_13             
+0000ef42  __mspabi_srli_14             
+0000ef3e  __mspabi_srli_15             
+0000ef72  __mspabi_srli_2              
+0000ef6e  __mspabi_srli_3              
+0000ef6a  __mspabi_srli_4              
+0000ef66  __mspabi_srli_5              
+0000ef62  __mspabi_srli_6              
+0000ef5e  __mspabi_srli_7              
+0000ef5a  __mspabi_srli_8              
+0000ef56  __mspabi_srli_9              
+0000ee34  _auto_init                   
+0000f384  _c_int00_noargs_noexit       
 0000fffe  _reset_vector                
 000002b0  _stack                       
-0000f230  _system_pre_init             
-0000f234  abort                        
+0000f520  _system_pre_init             
+0000f524  abort                        
 00000200  baseCnt                      
 ffffffff  binit                        
-0000021e  ctsStatusReg                 
+0000f4f0  check_busy                   
+00000224  ctsStatusReg                 
+0000f416  data_write                   
+0000f1ee  delay                        
 00000214  deltaCnts                    
-0000021c  display_value                
-0000021a  last_wheel_position          
-0000f340  left                         
-0000eefc  main                         
+00000220  display_value                
+0000f330  fadeLight                    
+00000216  i                            
+00000218  j                            
+0000021e  last_wheel_position          
+0000f00e  lcd_init                     
+0000f64e  left                         
+0000ec1a  main                         
 0000020c  measCnt                      
-0000f0fe  memccpy                      
-0000f1ce  memcpy                       
-0000f170  memset                       
-0000f372  middle_button                
-0000f34a  middle_element               
-0000f130  myprint                      
-0000f354  proximity_element            
-0000f386  proximity_sensor             
-0000f32c  right                        
-0000efaa  sprintf                      
-0000f20e  strlen                       
-00000220  timerA_UART_mode             
-00000216  txData                       
-0000f322  volume_down                  
-0000f336  volume_up                    
-0000f21c  watchdog_timer               
-0000f35e  wheel                        
-00000218  wheel_position               
+0000f3b8  memccpy                      
+0000f4b0  memcpy                       
+0000f43e  memset                       
+0000f680  middle_button                
+0000f658  middle_element               
+0000f3ea  myprint                      
+0000f662  proximity_element            
+0000f694  proximity_sensor             
+0000f63a  right                        
+0000f094  send_command                 
+0000f0d6  send_data                    
+0000f2cc  send_number                  
+0000f466  send_string                  
+0000f188  sprintf                      
+0000f4fe  strlen                       
+00000226  timerA_UART_mode             
+0000021a  txData                       
+0000f630  volume_down                  
+0000f644  volume_up                    
+0000f50c  watchdog_timer               
+0000f66c  wheel                        
+0000021c  wheel_position               
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -433,12 +476,14 @@ address   name
 00000200  baseCnt                      
 0000020c  measCnt                      
 00000214  deltaCnts                    
-00000216  txData                       
-00000218  wheel_position               
-0000021a  last_wheel_position          
-0000021c  display_value                
-0000021e  ctsStatusReg                 
-00000220  timerA_UART_mode             
+00000216  i                            
+00000218  j                            
+0000021a  txData                       
+0000021c  wheel_position               
+0000021e  last_wheel_position          
+00000220  display_value                
+00000224  ctsStatusReg                 
+00000226  timerA_UART_mode             
 000002b0  _stack                       
 00000300  __STACK_END                  
 000010f8  CALDCO_16MHZ                 
@@ -450,100 +495,127 @@ address   name
 000010fe  CALDCO_1MHZ                  
 000010ff  CALBC1_1MHZ                  
 0000e000  TI_CAPT_Custom               
-0000e3a6  TI_CAPT_Wheel                
-0000e568  CapTouchActiveMode           
-0000e728  TI_CTS_RO_PINOSC_TA0_WDTp_HAL
-0000e968  Dominant_Element             
-0000ea36  __TI_printfi_minimal         
-0000eb00  GetGesture                   
-0000ebd6  TI_CAPT_Update_Baseline      
-0000ec38  CapTouchIdleMode             
-0000ec98  _auto_init                   
-0000ed94  __mspabi_srli                
-0000eda2  __mspabi_srli_15             
-0000eda6  __mspabi_srli_14             
-0000edaa  __mspabi_srli_13             
-0000edae  __mspabi_srli_12             
-0000edb2  __mspabi_srli_11             
-0000edb6  __mspabi_srli_10             
-0000edba  __mspabi_srli_9              
-0000edbe  __mspabi_srli_8              
-0000edc2  __mspabi_srli_7              
-0000edc6  __mspabi_srli_6              
-0000edca  __mspabi_srli_5              
-0000edce  __mspabi_srli_4              
-0000edd2  __mspabi_srli_3              
-0000edd6  __mspabi_srli_2              
-0000edda  __mspabi_srli_1              
-0000ede0  Timer_A0_ISR                 
-0000ee2a  InitLaunchPadCore            
-0000eeba  SendData                     
-0000eefc  main                         
-0000ef3a  MeasureCapBaseLine           
-0000ef72  TimerA_UART_init             
-0000efaa  sprintf                      
-0000f010  TimerA_UART_tx               
-0000f03c  __mspabi_divi                
-0000f03c  __mspabi_remi                
-0000f068  __mspabi_slli                
-0000f074  __mspabi_slli_15             
-0000f076  __mspabi_slli_14             
-0000f078  __mspabi_slli_13             
-0000f07a  __mspabi_slli_12             
-0000f07c  __mspabi_slli_11             
-0000f07e  __mspabi_slli_10             
-0000f080  __mspabi_slli_9              
-0000f082  __mspabi_slli_8              
-0000f084  __mspabi_slli_7              
-0000f086  __mspabi_slli_6              
-0000f088  __mspabi_slli_5              
-0000f08a  __mspabi_slli_4              
-0000f08c  __mspabi_slli_3              
-0000f08e  __mspabi_slli_2              
-0000f090  __mspabi_slli_1              
-0000f094  TimerA_UART_shutdown         
-0000f0b0  TI_CAPT_Button               
-0000f0ca  _c_int00_noargs_noexit       
-0000f0fe  memccpy                      
-0000f130  myprint                      
-0000f146  __mspabi_divu                
-0000f146  __mspabi_remu                
-0000f15c  __TI_zero_init               
-0000f170  memset                       
-0000f184  __mspabi_mpyi                
-0000f184  __mspabi_mpyi_sw             
-0000f198  TimerA_UART_print            
-0000f1bc  __TI_decompress_none         
-0000f1ce  memcpy                       
-0000f1e0  TI_CAPT_Init_Baseline        
-0000f1f0  __mspabi_func_epilog_7       
-0000f1f2  __mspabi_func_epilog_6       
-0000f1f4  __mspabi_func_epilog_5       
-0000f1f6  __mspabi_func_epilog_4       
-0000f1f8  __mspabi_func_epilog_3       
-0000f1fa  __mspabi_func_epilog_2       
-0000f1fc  __mspabi_func_epilog_1       
-0000f200  TI_CAPT_Raw                  
-0000f20e  strlen                       
-0000f21c  watchdog_timer               
-0000f224  __TI_ISR_TRAP                
-0000f22a  __TI_decompress_rle24        
-0000f230  _system_pre_init             
-0000f234  C$$EXIT                      
-0000f234  abort                        
-0000f322  volume_down                  
-0000f32c  right                        
-0000f336  volume_up                    
-0000f340  left                         
-0000f34a  middle_element               
-0000f354  proximity_element            
-0000f35e  wheel                        
-0000f372  middle_button                
-0000f386  proximity_sensor             
-0000f3bc  __TI_Handler_Table_Base      
-0000f3c2  __TI_Handler_Table_Limit     
-0000f3c6  __TI_CINIT_Base              
-0000f3ce  __TI_CINIT_Limit             
+0000e3a6  CapTouchActiveMode           
+0000e5ca  TI_CAPT_Wheel                
+0000e78c  TI_CTS_RO_PINOSC_TA0_WDTp_HAL
+0000e9cc  Dominant_Element             
+0000ea9a  __TI_printfi_minimal         
+0000eb64  CapTouchIdleMode             
+0000ec1a  main                         
+0000eca2  GetGesture                   
+0000ed78  TI_CAPT_Update_Baseline      
+0000edda  InitLaunchPadCore            
+0000ee34  _auto_init                   
+0000ef30  __mspabi_srli                
+0000ef3e  __mspabi_srli_15             
+0000ef42  __mspabi_srli_14             
+0000ef46  __mspabi_srli_13             
+0000ef4a  __mspabi_srli_12             
+0000ef4e  __mspabi_srli_11             
+0000ef52  __mspabi_srli_10             
+0000ef56  __mspabi_srli_9              
+0000ef5a  __mspabi_srli_8              
+0000ef5e  __mspabi_srli_7              
+0000ef62  __mspabi_srli_6              
+0000ef66  __mspabi_srli_5              
+0000ef6a  __mspabi_srli_4              
+0000ef6e  __mspabi_srli_3              
+0000ef72  __mspabi_srli_2              
+0000ef76  __mspabi_srli_1              
+0000ef7c  Timer_A0_ISR                 
+0000f00e  lcd_init                     
+0000f052  SendData                     
+0000f094  send_command                 
+0000f0d6  send_data                    
+0000f118  MeasureCapBaseLine           
+0000f150  TimerA_UART_init             
+0000f188  sprintf                      
+0000f1ee  delay                        
+0000f21c  TimerA_UART_tx               
+0000f248  __mspabi_srai                
+0000f254  __mspabi_srai_15             
+0000f256  __mspabi_srai_14             
+0000f258  __mspabi_srai_13             
+0000f25a  __mspabi_srai_12             
+0000f25c  __mspabi_srai_11             
+0000f25e  __mspabi_srai_10             
+0000f260  __mspabi_srai_9              
+0000f262  __mspabi_srai_8              
+0000f264  __mspabi_srai_7              
+0000f266  __mspabi_srai_6              
+0000f268  __mspabi_srai_5              
+0000f26a  __mspabi_srai_4              
+0000f26c  __mspabi_srai_3              
+0000f26e  __mspabi_srai_2              
+0000f270  __mspabi_srai_1              
+0000f274  __mspabi_divi                
+0000f274  __mspabi_remi                
+0000f2a0  __mspabi_slli                
+0000f2ac  __mspabi_slli_15             
+0000f2ae  __mspabi_slli_14             
+0000f2b0  __mspabi_slli_13             
+0000f2b2  __mspabi_slli_12             
+0000f2b4  __mspabi_slli_11             
+0000f2b6  __mspabi_slli_10             
+0000f2b8  __mspabi_slli_9              
+0000f2ba  __mspabi_slli_8              
+0000f2bc  __mspabi_slli_7              
+0000f2be  __mspabi_slli_6              
+0000f2c0  __mspabi_slli_5              
+0000f2c2  __mspabi_slli_4              
+0000f2c4  __mspabi_slli_3              
+0000f2c6  __mspabi_slli_2              
+0000f2c8  __mspabi_slli_1              
+0000f2cc  send_number                  
+0000f2f0  Port_2                       
+0000f310  TA2_ISR                      
+0000f330  fadeLight                    
+0000f34e  TimerA_UART_shutdown         
+0000f36a  TI_CAPT_Button               
+0000f384  _c_int00_noargs_noexit       
+0000f3b8  memccpy                      
+0000f3ea  myprint                      
+0000f400  __mspabi_divu                
+0000f400  __mspabi_remu                
+0000f416  data_write                   
+0000f42a  __TI_zero_init               
+0000f43e  memset                       
+0000f452  __mspabi_mpyi                
+0000f452  __mspabi_mpyi_sw             
+0000f466  send_string                  
+0000f47a  TimerA_UART_print            
+0000f49e  __TI_decompress_none         
+0000f4b0  memcpy                       
+0000f4c2  TI_CAPT_Init_Baseline        
+0000f4d2  __mspabi_func_epilog_7       
+0000f4d4  __mspabi_func_epilog_6       
+0000f4d6  __mspabi_func_epilog_5       
+0000f4d8  __mspabi_func_epilog_4       
+0000f4da  __mspabi_func_epilog_3       
+0000f4dc  __mspabi_func_epilog_2       
+0000f4de  __mspabi_func_epilog_1       
+0000f4e2  TI_CAPT_Raw                  
+0000f4f0  check_busy                   
+0000f4fe  strlen                       
+0000f50c  watchdog_timer               
+0000f514  __TI_ISR_TRAP                
+0000f51a  __TI_decompress_rle24        
+0000f520  _system_pre_init             
+0000f524  C$$EXIT                      
+0000f524  abort                        
+0000f630  volume_down                  
+0000f63a  right                        
+0000f644  volume_up                    
+0000f64e  left                         
+0000f658  middle_element               
+0000f662  proximity_element            
+0000f66c  wheel                        
+0000f680  middle_button                
+0000f694  proximity_sensor             
+0000f6cc  __TI_Handler_Table_Base      
+0000f6d2  __TI_Handler_Table_Limit     
+0000f6d6  __TI_CINIT_Base              
+0000f6de  __TI_CINIT_Limit             
 0000ffe4  __TI_int02                   
 0000ffe6  __TI_int03                   
 0000ffe8  __TI_int04                   
@@ -560,4 +632,4 @@ ffffffff  binit
 UNDEFED   __TI_INITARRAY_Base          
 UNDEFED   __TI_INITARRAY_Limit         
 
-[186 symbols]
+[215 symbols]

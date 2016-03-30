@@ -65,6 +65,7 @@
 #include <msp430g2452.h>
 #include <stdio.h>
 #include <string.h>
+#include <intrinsics.h>
 #include "CTS_Layer.h"
 #include "uart.h"
 #include "lcd.h"
@@ -92,9 +93,11 @@
 /*------------------------------- GLOBAL DATA --------------------------------*/
 unsigned int wheel_position=ILLEGAL_SLIDER_WHEEL_POSITION,
              last_wheel_position=ILLEGAL_SLIDER_WHEEL_POSITION;
-unsigned int deltaCnts[1];
+unsigned int deltaCnts[1]; //Address where proximity sensor measurements are written
 unsigned int prox_raw_Cnts;
 int display_value = PRESET_LEVEL;  //Brightness level in percentage 0-100%
+typedef enum {SLEEP,WAKING,IDLE,ACTIVE} system_state;
+static volatile system_state state = SLEEP;
 
 /*-------------------------- FUNCTIONS PROTOTYPES ----------------------------*/
 void InitLaunchPadCore(void);
@@ -102,9 +105,10 @@ void SendData(unsigned char touch);
 void myprint(char *msg);
 void CapTouchIdleMode(void);
 void MeasureCapBaseLine(void);
+void setUpTimer1(void);
+void setUpTimer2(void);
 unsigned char GetGesture(unsigned char wheel_position);
 void CapTouchActiveMode();
-void MotionSensor();
 void fadeLight(int valuePWM);   //Function used to fade the LED
 
 
@@ -123,12 +127,37 @@ void main(void)
   TI_CAPT_Init_Baseline(&proximity_sensor);
   TI_CAPT_Update_Baseline(&proximity_sensor,5);
 
+
+
   while (1)
   {
-//    MotionSensor();
-    CapTouchIdleMode();
-    MeasureCapBaseLine();
-    CapTouchActiveMode();
+    //get current state
+    system_state currentState = state;
+    switch(currentState){
+    case SLEEP:
+         //put micro to sleep. wake up when motion sensor senses
+         P1OUT &= ~LIGHT;               //Set the Light LED to low
+         P2IE  |=  (BIT6);              //Enable interrupt for P2.6
+         P2IES &= ~(BIT6);              // trigger interrupt on high to low
+         P2IFG  &=  ~(BIT6);            //  P2.6    IFG clear
+         _low_power_mode_3();
+         break;
+    case WAKING:
+        //turn on lights and set to default setting
+        P1OUT |= LIGHT; // lights on
+        fadeLight(display_value);//set light to display value
+        //set state to idle
+        state = IDLE;
+        break;
+    case IDLE:
+        //continually poll proximity sensor until activity then remeasure baseline
+        CapTouchIdleMode();
+        MeasureCapBaseLine();
+        break;
+        case ACTIVE:
+        //read the gestures of the cap touch
+        CapTouchActiveMode();
+     }
   }
 }
 
@@ -148,11 +177,11 @@ void myprint(char *msg) {
  * ---------------------------------------------------------------------------*/
 void SendData(unsigned char touch)
 {
-	  char buf[32];
-	  memset(buf, 0, sizeof(buf));
-	  sprintf(buf, "%d", touch);
-	  myprint(buf);
-	  myprint("\r\n");
+  char buf[32];
+  memset(buf, 0, sizeof(buf));
+  sprintf(buf, "%d", touch);
+  myprint(buf);
+  myprint("\r\n");
 }
 
 /* ----------------------------InitLaunchPadCore--------------------------------
@@ -162,40 +191,45 @@ void SendData(unsigned char touch)
 void InitLaunchPadCore(void)
 {
   BCSCTL1 |= DIVA_0;             //ACLK/(0:1, 1:2, 2:4, 3:8)
-  BCSCTL3 |= LFXT1S_2;           //Select ACLK from VLO (no crystal)
+  BCSCTL3 |= LFXT1S_2;           //Select ACLK from VLO (no crystal, 12kHz)
   
   //Set the display pins as outputs low
   P1OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
-  P1OUT &= ~BIT6;               //Set the Light LED to low
+  P1OUT &= ~LIGHT;               //Set the Light LED to low
   //Set the display pins as outputs
   P1DIR |= (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
-  P1DIR |= BIT6;                //Set P1.6 as output
+  P1DIR |= LIGHT;                //Set P1.6 as output
 
   P2SEL = 0x00;                  //Configure P2 as I/Os, No XTAL
   P2OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5);    //Cap touch sensors
-  P2OUT &= ~DISPLAY;        //Set display enable pin to low
+  P2OUT &= ~DISPLAY;             //Set display enable pin to low
   P2DIR |= (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5);  //Cap touch sensors
-  P2DIR |= DISPLAY;         //Set the display enable pin as output
-  P2DIR &= ~BIT6;           //Set P2.6 as input for the motion sensor
+  P2DIR |= DISPLAY;              //Set the display enable pin as output
+  P2DIR &= ~BIT6;                //Set P2.6 as input for the motion sensor
+  P2IE  |=  (BIT6);              //  Enable  interrupt   for P2.6
+  P2IES &= ~(BIT6);              // trigger interrupt on high to low
+  P2IFG  &=  (~BIT6);            //  P2.6    IFG clear
 }
 
-/* ----------------------------MotionSensor--------------------------------
-*
-*-----------------------------------------------------------------------------*/
-//void MotionSensor()
-//{
-//  if(P1IN & BIT6)
-//  {
-//    fadeLight(display_value);
-//  }
-//  else
-//  {
-//    P2OUT &= ~BIT6;
-//  }
-//}
+/* ----------------setUpTimers-----------------------------------------
+ * Setup for timers 1 and 2
+ * timer 1 - proximity sensor polling
+ * timer 2 - motion sensor polling
+ * ------------------------------------------------------------------------*/
+void setUpTimer1(void){
+  TACCR1 = 100; // number of cycles in timer
+  TACTL = TASSEL_1 + MC_1; // use aclk for timer source and use up mode
+  TACCTL1 |= CCIE; //enable interrupts on timer
+}
+void setUpTimer2(void){
+
+  TACCR2 = 65535; // number of cycles in timer. ~5secs
+  TACTL = TASSEL_1 + MC_1; // use aclk for timer source and use up mode
+  TACCTL2 |= CCIE; //enable interrupts on timer
+}
 
 /* ----------------CapTouchIdleMode-----------------------------------------
- * Device stays in LPM3 'sleep' mode, only Proximity Sensor is used to detect 
+ * Device stays in LPM0 'sleep' mode, only Proximity Sensor is used to detect
  * any movement triggering device wake up                                  
  * ------------------------------------------------------------------------*/ 
 void CapTouchIdleMode(void)
@@ -211,26 +245,33 @@ void CapTouchIdleMode(void)
   P2OUT &= ~DISPLAY;                       //Set display enable pin to low
   deltaCnts[0] = 0;
   
+  //set up second timer to see if it needs to go back to deeper sleep.
+  setUpTimer2();
+
   /* Sleeping in LPM3 with ACLK/100 = 12Khz/100 = 120Hz wake up interval */
   /* Measure proximity sensor count upon wake up */
   /* Wake up if proximity deltaCnts > THRESHOLD */  
   do
-  {
-    TACCR0 = 100;
-    TACTL = TASSEL_1 + MC_1;
-    TACCTL0 |= CCIE;
-//    __bis_SR_register(LPM3_bits+GIE);
-    TACCTL0 &= ~CCIE;
+  {//checks every 8.3 ms
+
+    setUpTimer1();
+    _low_power_mode_0();
+    //__bis_SR_register(LPM3_bits+GIE);
+    TACCTL1 &= ~CCIE;//disable interrupts on timer
+    if(state == SLEEP){return;}
+
     TI_CAPT_Custom(&proximity_sensor,deltaCnts);
   } while (deltaCnts[0] <= PROXIMITY_THRESHOLD);
-  
+  TACCTL2 &= ~CCIE;                 //disable interrupts on timer 2 due to activity
   P2OUT |= DISPLAY;                 //Set display enable pin to high
-//  lcd_init();                       //LCD initial settings
-//  send_string("Welcome");
-//  send_command(SECONDLINE);         //move cusor to the second line
-//  send_string("Level: ");
-//  send_number(display_value);
-//  fadeLight(display_value);
+  __delay_cycles(100);                //give time for lcd to power on
+  state = ACTIVE;
+  lcd_init();                       //LCD initial settings
+  send_string("Welcome");
+  send_command(SECONDLINE);         //move cusor to the second line
+  send_string("Level: ");
+  send_number(display_value);
+
 
 }
  
@@ -365,12 +406,6 @@ void CapTouchActiveMode()
   activeCounter = 0;
   gestureDetected = 0;
   
-//  lcd_init();                    //LCD initial settings
-//  send_string("Welcome");
-//  send_command(SECONDLINE);      //move cusor to the second line
-//  send_string("Level: ");
-//  send_number(display_value);
-
   while (idleCounter++ < MAX_IDLE_TIME)
   {  
     BCSCTL1 = CALBC1_8MHZ;       //Set calibrated range for DCO to 8MHz
@@ -378,9 +413,12 @@ void CapTouchActiveMode()
     BCSCTL2 |= DIVS_3;           //Set SMCLK = DCO/8 = 1MHz
     TACCTL0 &= ~CCIE;   
 
-//    send_string("Level: ");
-//    send_number(display_value);
-//    fadeLight(display_value);
+    /*update LCD screen */
+    send_command(FIRSTLINE);
+    send_string("Change light");
+    send_command(SECONDLINE);      //move cusor to the second line
+    send_string("Level: ");
+    send_number(display_value);
 
     wheel_position = ILLEGAL_SLIDER_WHEEL_POSITION;
     wheel_position = TI_CAPT_Wheel(&wheel);
@@ -452,7 +490,7 @@ void CapTouchActiveMode()
 
         myprint("CapTouchActiveMode- display_value: ");
         SendData(display_value);
-//        fadeLight(display_value);
+        fadeLight(display_value);
       }
 
       else
@@ -462,10 +500,6 @@ void CapTouchActiveMode()
           {
           	/* Transmit wheel position [twice] via UART to PC */
           	wheelTouchCounter = 0;
-//          	myprint("CapTouchActiveMode- wheel_position + WHEEL_POSITION_OFFSET: ");
-//          	SendData(wheel_position + WHEEL_POSITION_OFFSET );
-//          	myprint("CapTouchActiveMode- wheel_position + WHEEL_POSITION_OFFSET: ");
-//          	SendData(wheel_position + WHEEL_POSITION_OFFSET );
           }
         }
        	else
@@ -485,7 +519,7 @@ void CapTouchActiveMode()
           /* Transmit center button code [twice] via UART to PC */
           myprint("CapTouchActiveMode- MIDDLE_BUTTON_CODE: ");
           SendData(MIDDLE_BUTTON_CODE);
-//          fadeLight(display_value);
+          fadeLight(display_value);
 
           centerButtonTouched = 1;
           
@@ -500,7 +534,7 @@ void CapTouchActiveMode()
 
           myprint("CapTouchActiveMode- Display value: ");
           SendData(display_value);
-//          fadeLight(display_value);
+          fadeLight(display_value);
         }
 
         idleCounter = 0;
@@ -508,7 +542,6 @@ void CapTouchActiveMode()
       else    
       { /* No touch was registered at all [Not wheel or center button */
         centerButtonTouched = 0;
-//        P1OUT &= BIT0;
         if ((gesture == INVALID_GESTURE) || (gestureDetected == 0))
         { /* No gesture was registered previously */
           if (last_wheel_position  != ILLEGAL_SLIDER_WHEEL_POSITION)
@@ -531,7 +564,8 @@ void CapTouchActiveMode()
    * refinement must be taken into consideration when interfacing with PC
    * applications GUI to retain proper communication protocol.
    * -----------------------------------------------------------------------*/
-  } 
+  } // while has been idle for too long. to to idle mode
+  state = IDLE;
 }
 
 //Function used to fade the LED
@@ -544,3 +578,39 @@ void fadeLight(int valuePWM)
   TACTL = TASSEL_2 + MC_1;      // SMCLK, up mode
 }
 
+ /************************* INTERRUPTS ***************************************/
+
+
+// Interrupt service routine for Timer_A
+#pragma vector= TIMER0_A1_VECTOR
+__interrupt void TA2_ISR (void){
+	switch(__even_in_range(TAIV, TA0IV_TACCR2)){ //faster checks instead of just switch(TAIV)
+	case TA0IV_TACCR1:
+		//time to poll the proximity sensor.get out of low power mode
+		break;
+	case TA0IV_TACCR2:
+		// no one touched the wheel in 5 seconds. check to see if anyone is in the room
+		if((P1IN & BIT6) != BIT6){
+			//no one is in the room, go to deep sleep.
+			state = SLEEP;
+			TACCTL2 &= ~CCIE;//disable interrupts on timer 2
+		}
+	break;
+	}
+
+	__low_power_mode_off_on_exit();
+}
+
+//  Port    2   interrupt   service routine
+#pragma vector=PORT2_VECTOR
+__interrupt void Port_2(void)
+{
+	if((P2IFG & BIT6) == BIT6){ //If the motion sensor tripped...
+		//user has walked into room. wake up system and set state to waking
+		__low_power_mode_off_on_exit();// restores active mode
+		state = WAKING;
+
+		P2IE  &=  ~(BIT6); //  Disable  interrupt   for P2.6 so it doesn't trip accidentally
+		P2IFG  &=  (~BIT6);    //  P2.6    IFG clear
+	}
+}
